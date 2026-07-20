@@ -41,8 +41,7 @@ username=${VNC_USER:-default}
 password=${password}
 certificate_file=${config_dir}/tls.crt
 private_key_file=${config_dir}/tls.key
-render_cursor=true
 EOF
 chmod 600 "${config_dir}/config"
 
-exec wayvnc --config="${config_dir}/config"
+exec wayvnc --config="${config_dir}/config" --render-cursor
