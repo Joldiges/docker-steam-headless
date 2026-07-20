@@ -37,4 +37,10 @@ fi
 sed -i 's|^command=.*start-sunshine.*$|command=/usr/bin/start-sunshine-labwc.sh|' /etc/supervisor.d/sunshine.ini
 sed -i 's|DISPLAY="%(ENV_DISPLAY)s",XDG_RUNTIME_DIR="%(ENV_XDG_RUNTIME_DIR)s"|DISPLAY="",WAYLAND_DISPLAY="wayland-0",XDG_CURRENT_DESKTOP="labwc",XDG_SESSION_TYPE="wayland",XDG_RUNTIME_DIR="%(ENV_XDG_RUNTIME_DIR)s"|' /etc/supervisor.d/sunshine.ini
 
+if [ "${WEB_UI_MODE:-none}" = "vnc" ]; then
+    sed -i 's|^autostart=.*$|autostart=true|' /etc/supervisor.d/wayvnc.ini
+else
+    sed -i 's|^autostart=.*$|autostart=false|' /etc/supervisor.d/wayvnc.ini
+fi
+
 echo -e "\e[34mDONE\e[0m"

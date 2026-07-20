@@ -10,6 +10,8 @@ RUN apt-get update \
         waybar \
         wlr-randr \
         xwayland \
+        wayvnc \
+        openssl \
         avahi-daemon \
         seatd \
         flatpak \
@@ -20,7 +22,7 @@ COPY overlay-labwc /
 
 RUN chmod +x /usr/bin/start-labwc.sh /usr/bin/start-sunshine-labwc.sh \
     /usr/bin/start-steam-labwc.sh /usr/bin/install-bolt.sh \
-    /usr/bin/display-control /usr/bin/display-menu \
+    /usr/bin/start-wayvnc.sh /usr/bin/display-control /usr/bin/display-menu \
     /etc/cont-init.d/99-configure_labwc.sh \
     /templates/home_directory_template/.config/labwc/autostart
 
