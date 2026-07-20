@@ -2,13 +2,6 @@
 
 print_header "Configure labwc headless Wayland session"
 
-# Flatpak sandbox namespaces are unavailable during image builds in some
-# container engines, so install Bolt when the privileged runtime starts.
-if ! flatpak info --system com.adamcake.Bolt >/dev/null 2>&1; then
-    flatpak install --system --noninteractive -y flathub com.adamcake.Bolt \
-        || echo "WARNING: Bolt installation failed; it can be retried after startup"
-fi
-
 # Xwayland refuses to use the shared X socket directory without the sticky bit.
 mkdir -p /tmp/.X11-unix
 chmod 1777 /tmp/.X11-unix
