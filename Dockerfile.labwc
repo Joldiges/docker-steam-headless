@@ -34,5 +34,6 @@ ENV DESKTOP_SESSION="labwc" \
     DISPLAY_SCALE="1.25" \
     ENABLE_STEAM="true" \
     WLR_BACKENDS="headless,libinput" \
+    WLR_HEADLESS_OUTPUTS="1" \
     XDG_CURRENT_DESKTOP="labwc" \
     XDG_SESSION_TYPE="wayland"
