@@ -35,5 +35,6 @@ ENV DESKTOP_SESSION="labwc" \
     ENABLE_STEAM="true" \
     WLR_BACKENDS="headless,libinput" \
     WLR_HEADLESS_OUTPUTS="1" \
+    WLR_RENDERER="pixman" \
     XDG_CURRENT_DESKTOP="labwc" \
     XDG_SESSION_TYPE="wayland"
