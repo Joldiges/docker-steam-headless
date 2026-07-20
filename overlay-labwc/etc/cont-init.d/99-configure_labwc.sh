@@ -2,6 +2,12 @@
 
 print_header "Configure labwc headless Wayland session"
 
+# The base image uses a shared D-Bus session file under /tmp.  Its first
+# version can be created by root, but labwc/Steam/Sunshine run as the desktop
+# user and must be able to replace it on every compositor restart.
+rm -f /tmp/.dbus-desktop-session.env
+install -o "${PUID:-1000}" -g "${PGID:-1000}" -m 600 /dev/null /tmp/.dbus-desktop-session.env
+
 # Xwayland refuses to use the shared X socket directory without the sticky bit.
 mkdir -p /tmp/.X11-unix
 chmod 1777 /tmp/.X11-unix
@@ -18,6 +24,15 @@ sed -i 's|^command=.*$|command=/bin/false|' /etc/supervisor.d/xorg.ini
 grep -q '^disabled=' /etc/supervisor.d/xorg.ini \
     && sed -i 's|^disabled=.*$|disabled=true|' /etc/supervisor.d/xorg.ini \
     || sed -i '/^autostart=/a disabled=true' /etc/supervisor.d/xorg.ini
+
+# The inherited image's X11 VNC service cannot capture this Wayland desktop.
+# Use the optional wayvnc service below instead.
+for service in vnc.ini vnc-audio.ini; do
+    if [ -f "/etc/supervisor.d/${service}" ]; then
+        sed -i 's|^autostart=.*$|autostart=false|' "/etc/supervisor.d/${service}"
+        sed -i 's|^autorestart=.*$|autorestart=false|' "/etc/supervisor.d/${service}"
+    fi
+done
 
 if [ "${MODE}" != "secondary" ] && [ "${ENABLE_SUNSHINE:-}" = "true" ]; then
     sed -i 's|^autostart.*=.*$|autostart=true|' /etc/supervisor.d/labwc.ini
