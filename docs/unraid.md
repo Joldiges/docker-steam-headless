@@ -1,5 +1,18 @@
 # Unraid
 
+## Labwc Wayland template
+
+Add this repository to **Settings → Docker → Template repositories**:
+
+```text
+https://github.com/Joldiges/docker-steam-headless
+```
+
+Then open the **Apps** tab, select the `steam-headless-labwc` template, and set
+`USER_PASSWORD` before starting the container. The template uses host networking
+and privileged mode because Sunshine virtual input and seatd need access to
+`/dev/uinput`, `/dev/tty0`, and `/dev/console`.
+
 Follow these instructions to install Steam Headless on Unraid
 
 ## CONTAINER TEMPLATE:

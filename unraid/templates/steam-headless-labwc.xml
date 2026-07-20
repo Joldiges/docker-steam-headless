@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>steam-headless-labwc</Name>
+  <Repository>docker.io/jamesoldiges/steam-headless:labwc-wayland-nvidia</Repository>
+  <Registry>https://hub.docker.com/r/jamesoldiges/steam-headless</Registry>
+  <Network>host</Network>
+  <Privileged>true</Privileged>
+  <Support>https://github.com/Joldiges/docker-steam-headless/issues</Support>
+  <Project>https://github.com/Joldiges/docker-steam-headless/tree/labwc-wayland-nvidia</Project>
+  <Overview>Steam Headless with labwc Wayland, Sunshine, Xwayland, Bolt OSRS launcher, virtual display, and virtual input support.</Overview>
+  <Category>GameServers:</Category>
+  <WebUI>https://[IP]:[PORT:47990]</WebUI>
+  <Config Name="Home directory" Target="/home/default" Default="/mnt/user/appdata/steam-headless-labwc/home" Mode="rw" Description="Persistent Steam, Bolt, labwc, and Sunshine configuration." Type="Path" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Games directory" Target="/mnt/games" Default="/mnt/user/appdata/steam-headless-labwc/games" Mode="rw" Description="Persistent Steam library and game data." Type="Path" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Sunshine Web UI" Target="47990" Default="47990" Mode="tcp" Description="Sunshine configuration UI. Host networking is enabled." Type="Port" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="USER" Target="USER" Default="default" Mode="" Description="Desktop username." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="USER_PASSWORD" Target="USER_PASSWORD" Default="" Mode="" Description="Password for the desktop user and SSH. Set this in the template." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Enable Steam" Target="ENABLE_STEAM" Default="true" Mode="" Description="Start Steam automatically." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Enable Sunshine" Target="ENABLE_SUNSHINE" Default="true" Mode="" Description="Start Sunshine automatically." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Display width" Target="DISPLAY_SIZEW" Default="2560" Mode="" Description="Virtual display width." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Display height" Target="DISPLAY_SIZEH" Default="1600" Mode="" Description="Virtual display height." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Display refresh" Target="DISPLAY_REFRESH" Default="120" Mode="" Description="Default virtual display refresh rate." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Display scale" Target="DISPLAY_SCALE" Default="1.25" Mode="" Description="Default labwc scale factor." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Web UI mode" Target="WEB_UI_MODE" Default="none" Mode="" Description="Sunshine/labwc image uses Moonlight; noVNC is disabled." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Sunshine CSRF origins" Target="SUNSHINE_CSRF_ALLOWED_ORIGINS" Default="" Mode="" Description="Trusted Sunshine Web UI origins, comma-separated. Include the server URL origin if using the Web UI." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Device Name="uinput" Target="/dev/uinput" Default="/dev/uinput" Mode="rw" Description="Virtual mouse, keyboard, and gamepad input." Type="Device" Display="advanced" Required="true" Mask="false"/>
+  <Device Name="tty0" Target="/dev/tty0" Default="/dev/tty0" Mode="rw" Description="Seat/input device access." Type="Device" Display="advanced" Required="true" Mask="false"/>
+  <Device Name="console" Target="/dev/console" Default="/dev/console" Mode="rw" Description="Seat/input device access." Type="Device" Display="advanced" Required="true" Mask="false"/>
+</Container>
