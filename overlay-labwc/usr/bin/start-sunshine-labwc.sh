@@ -41,7 +41,12 @@ mkdir -p "${USER_HOME:?}/.config/sunshine"
 [ -f "${USER_HOME}/.config/sunshine/sunshine_state.json" ] || echo '{}' > "${USER_HOME}/.config/sunshine/sunshine_state.json"
 
 set_sunshine_option capture "${SUNSHINE_CAPTURE:-wlr}"
-set_sunshine_option encoder "${SUNSHINE_ENCODER:-software}"
+encoder="${SUNSHINE_ENCODER:-software}"
+# Pixman is intentional for a DRM-less headless output. NVENC cannot import
+# pixman buffers on this path; allow explicit hardware selection, but make the
+# image's auto/default setting reliable instead of leaving Sunshine in 503 state.
+[ "${encoder}" = auto ] && encoder=software
+set_sunshine_option encoder "${encoder}"
 
 if [ -n "${SUNSHINE_CSRF_ALLOWED_ORIGINS:-}" ]; then
     csrf_origins=""
