@@ -45,6 +45,48 @@ fi
 if [ ! -f "${USER_HOME:?}/.config/sunshine/sunshine_state.json" ]; then
     echo "{}" > "${USER_HOME:?}/.config/sunshine/sunshine_state.json"
 fi
+
+# The primary display is a normal Xorg dummy screen.  Sunshine's automatic
+# capture selection can prefer KMS when no physical output exists, so make
+# X11 capture explicit while retaining environment overrides for advanced
+# deployments.
+set_sunshine_option() {
+    local option="${1:?}"
+    local value="${2:?}"
+    local config="${USER_HOME:?}/.config/sunshine/sunshine.conf"
+    if grep -qE "^[[:space:]]*${option}[[:space:]]*=" "${config}"; then
+        sed -i -E "s|^[[:space:]]*${option}[[:space:]]*=.*$|${option} = ${value}|" "${config}"
+    else
+        printf '\n%s = %s\n' "${option}" "${value}" >> "${config}"
+    fi
+}
+
+case "${SUNSHINE_CAPTURE:-x11}" in
+    auto|'') ;;
+    nvfbc|kms|wlr|kwin|x11)
+        set_sunshine_option capture "${SUNSHINE_CAPTURE}"
+        ;;
+    *)
+        echo "WARNING: ignoring unsupported SUNSHINE_CAPTURE='${SUNSHINE_CAPTURE}'"
+        ;;
+esac
+
+if [ "${SUNSHINE_CAPTURE:-x11}" = "x11" ]; then
+    # The dummy driver provides a complete X screen but not a physical RandR
+    # monitor.  -1 tells Sunshine to capture the whole screen.
+    set_sunshine_option output_name -1
+fi
+
+case "${SUNSHINE_ENCODER:-software}" in
+    auto|'') ;;
+    nvenc|quicksync|amdvce|vaapi|vulkan|software)
+        set_sunshine_option encoder "${SUNSHINE_ENCODER}"
+        ;;
+    *)
+        echo "WARNING: ignoring unsupported SUNSHINE_ENCODER='${SUNSHINE_ENCODER}'"
+        ;;
+esac
+
 # Reset the default username/password
 if ([ "X${SUNSHINE_USER:-}" != "X" ] && [ "X${SUNSHINE_PASS:-}" != "X" ]); then
     /usr/bin/sunshine "${USER_HOME:?}/.config/sunshine/sunshine.conf" --creds "${SUNSHINE_USER:?}" "${SUNSHINE_PASS:?}"

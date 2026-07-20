@@ -122,7 +122,11 @@ function configure_x_server {
 }
 
 if ([ "${MODE}" != "s" ] && [ "${MODE}" != "secondary" ]); then
-    if [[ -z ${nvidia_gpu_hex_id} ]]; then
+    # Keep the dummy Xorg screen even when a GPU is passed through. This is
+    # required for a headless host with no HDMI/DisplayPort sink.
+    if [[ -z ${nvidia_gpu_hex_id} ]] \
+        || [ "${FORCE_X11_DUMMY_CONFIG:-false}" = "true" ] \
+        || [ "X${monitor_connected}" = "X" ]; then
         print_header "Generate default xorg.conf"
         configure_x_server
     else
