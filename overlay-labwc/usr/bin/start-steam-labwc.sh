@@ -3,8 +3,11 @@ set -e
 source /usr/bin/common-functions.sh
 
 runtime_dir="${XDG_RUNTIME_DIR:?}"
-for _ in $(seq 1 60); do
-    [ -S "${runtime_dir}/${WAYLAND_DISPLAY:-wayland-0}" ] && break
+for _ in $(seq 1 180); do
+    if [ -f /tmp/.started-desktop ] && [ -S "${runtime_dir}/${WAYLAND_DISPLAY:-wayland-0}" ]; then
+        sleep 2
+        [ -f /tmp/.started-desktop ] && [ -S "${runtime_dir}/${WAYLAND_DISPLAY:-wayland-0}" ] && break
+    fi
     sleep 0.5
 done
 [ -S "${runtime_dir}/${WAYLAND_DISPLAY:-wayland-0}" ] || exit 11

@@ -6,8 +6,11 @@ source /usr/bin/common-functions.sh
 runtime_dir="${XDG_RUNTIME_DIR:?}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
-for _ in $(seq 1 60); do
-    [ -S "${runtime_dir}/${WAYLAND_DISPLAY}" ] && break
+for _ in $(seq 1 180); do
+    if [ -f /tmp/.started-desktop ] && [ -S "${runtime_dir}/${WAYLAND_DISPLAY}" ]; then
+        sleep 2
+        [ -f /tmp/.started-desktop ] && [ -S "${runtime_dir}/${WAYLAND_DISPLAY}" ] && break
+    fi
     sleep 0.5
 done
 [ -S "${runtime_dir}/${WAYLAND_DISPLAY}" ] || { echo "FATAL: Wayland socket not available"; exit 11; }
