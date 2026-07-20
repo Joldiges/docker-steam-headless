@@ -9,7 +9,8 @@ _term() {
 }
 trap _term SIGTERM SIGINT
 
-runtime_dir="${XDG_RUNTIME_DIR:?}"
+runtime_dir="${XDG_RUNTIME_DIR:-/tmp/.X11-unix/run}"
+export XDG_RUNTIME_DIR="${runtime_dir}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
 for _ in $(seq 1 180); do
@@ -40,7 +41,7 @@ mkdir -p "${USER_HOME:?}/.config/sunshine"
 [ -f "${USER_HOME}/.config/sunshine/sunshine_state.json" ] || echo '{}' > "${USER_HOME}/.config/sunshine/sunshine_state.json"
 
 set_sunshine_option capture "${SUNSHINE_CAPTURE:-wlr}"
-set_sunshine_option encoder "${SUNSHINE_ENCODER:-auto}"
+set_sunshine_option encoder "${SUNSHINE_ENCODER:-software}"
 
 if [ -n "${SUNSHINE_CSRF_ALLOWED_ORIGINS:-}" ]; then
     csrf_origins=""

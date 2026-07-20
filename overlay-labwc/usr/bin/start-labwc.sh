@@ -2,7 +2,8 @@
 set -e
 source /usr/bin/common-functions.sh
 
-runtime_dir="${XDG_RUNTIME_DIR:?}"
+runtime_dir="${XDG_RUNTIME_DIR:-/tmp/.X11-unix/run}"
+export XDG_RUNTIME_DIR="${runtime_dir}"
 mkdir -p "${runtime_dir}"
 chmod 700 "${runtime_dir}"
 
@@ -40,6 +41,19 @@ done
 if [ ! -S "${runtime_dir}/${WAYLAND_DISPLAY}" ]; then
     echo "FATAL: labwc did not create ${runtime_dir}/${WAYLAND_DISPLAY}"
     exit 11
+fi
+
+# Configure the headless output before clients (especially Sunshine) inspect it.
+# With the pixman renderer this is also the reliable point at which wlroots can
+# allocate the requested buffer without a real DRM connector.
+output="${DISPLAY_OUTPUT:-HEADLESS-1}"
+mode="${DISPLAY_SIZEW:-2560}x${DISPLAY_SIZEH:-1600}@${DISPLAY_REFRESH:-120}Hz"
+if ! wlr-randr --output "${output}" --custom-mode "${mode}" --on; then
+    echo "WARNING: unable to apply headless mode ${mode} on ${output}; keeping compositor default"
+fi
+if [ -n "${DISPLAY_SCALE:-}" ]; then
+    wlr-randr --output "${output}" --scale "${DISPLAY_SCALE}" || \
+        echo "WARNING: unable to apply display scale ${DISPLAY_SCALE}"
 fi
 
 touch /tmp/.started-desktop

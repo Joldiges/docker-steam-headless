@@ -3,7 +3,8 @@
 set -euo pipefail
 source /usr/bin/common-functions.sh
 
-runtime_dir="${XDG_RUNTIME_DIR:?}"
+runtime_dir="${XDG_RUNTIME_DIR:-/tmp/.X11-unix/run}"
+export XDG_RUNTIME_DIR="${runtime_dir}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 
 for _ in $(seq 1 180); do

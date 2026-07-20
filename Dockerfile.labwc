@@ -32,6 +32,7 @@ ENV DESKTOP_SESSION="labwc" \
     DISPLAY_SIZEH="1600" \
     DISPLAY_REFRESH="120" \
     DISPLAY_SCALE="1.25" \
+    SUNSHINE_ENCODER="software" \
     ENABLE_STEAM="true" \
     WLR_BACKENDS="headless,libinput" \
     WLR_HEADLESS_OUTPUTS="1" \
