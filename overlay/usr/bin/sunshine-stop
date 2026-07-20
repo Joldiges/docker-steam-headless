@@ -83,7 +83,14 @@ done
 echo "  - All sunshine-run related processes are stopped."
 
 # Check if the required information was stored for resetting the display resolution and refresh rate
-if ([ "X${primary_output:-}" != "X" ] && [ "X${display_mode:-}" != "X" ] && [ "X${display_rate:-}" != "X" ]); then
+if [ "X${wayland_output:-}" != "X" ] && [ "X${wayland_mode:-}" != "X" ]; then
+    echo "  - Resetting Wayland display to ${wayland_mode} ${wayland_rate:-}Hz"
+    if [ -n "${wayland_rate:-}" ]; then
+        wlr-randr --output "${wayland_output}" --custom-mode "${wayland_mode}@${wayland_rate}Hz" || true
+    else
+        wlr-randr --output "${wayland_output}" --custom-mode "${wayland_mode}" || true
+    fi
+elif ([ "X${primary_output:-}" != "X" ] && [ "X${display_mode:-}" != "X" ] && [ "X${display_rate:-}" != "X" ]); then
     # Reset display resolution and refresh rate
     echo "  - Resetting display resolution to ${display_mode:?} ${display_rate:?}Hz"
     xrandr --output "${primary_output:?}" --mode "${display_mode:?}" --rate "${display_rate:?}"

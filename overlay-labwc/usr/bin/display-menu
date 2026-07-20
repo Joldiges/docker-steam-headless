@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+choice="$(printf '%s\n' \
+  'Resolution: 2560x1600' 'Resolution: 1920x1200' 'Resolution: 1600x1000' 'Resolution: 1280x800' \
+  'Framerate: 120 Hz' 'Framerate: 90 Hz' 'Framerate: 60 Hz' \
+  'Scale: 100%' 'Scale: 125%' 'Scale: 150%' | fuzzel --dmenu --prompt='Display: ')" || exit 0
+
+case "$choice" in
+  'Resolution: '*) display-control resolution "${choice#Resolution: }" ;;
+  'Framerate: '*) refresh="${choice#Framerate: }"; display-control refresh "${refresh% Hz}" ;;
+  'Scale: 100%') display-control scale 1 ;;
+  'Scale: 125%') display-control scale 1.25 ;;
+  'Scale: 150%') display-control scale 1.5 ;;
+esac

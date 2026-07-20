@@ -45,7 +45,10 @@ fi
 
 if [[ -e /dev/uinput ]]; then
     print_step_header "Ensure the default user has permission to r/w on input devices"
-    chmod 0666 /dev/uinput
+    # Restricted/rootless runtimes may expose uinput without allowing the
+    # container to change its mode. That must not prevent the desktop from
+    # starting; the host/runtime is responsible for the final device ACL.
+    chmod 0666 /dev/uinput || print_warning "Unable to change permissions on /dev/uinput; continuing"
 fi
 
 echo -e "\e[34mDONE\e[0m"

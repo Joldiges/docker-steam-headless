@@ -10,6 +10,20 @@ Follow these instructions to install Steam Headless on Unraid
 ![](./images/install-steam-headless-unraid-ca.png)
 4. Configure the template as required.
 
+For remote Sunshine Web UI access with current Sunshine releases, add this
+environment variable in the template (Advanced View):
+
+```text
+Name: SUNSHINE_CSRF_ALLOWED_ORIGINS
+Value: 192.168.0.49,192.168.0.140
+```
+
+Use the server address or hostname exactly as it appears in the browser URL;
+do not use the Moonlight client's address. Bare values are interpreted as
+HTTPS origins by this image. For example, opening
+`https://tower.example.lan:47990` requires `tower.example.lan` in the value.
+Only add trusted origins.
+
 
 ## GPU CONFIGURATION:
 
@@ -56,3 +70,8 @@ Unraid's Linux kernel by default does not have the modules required to support c
     - WEB_UI_MODE (Default: 'vnc' - Set to 'none' to disable the WebUI)
 
 3. No server restart is required, however. Ensure that the **steam-headless** Docker container is recreated after installing the **uinput** plugin for it to be able to detect the newly added module.
+
+For the labwc Wayland image, keep the container privileged or pass through
+`/dev/uinput`, `/dev/tty0`, and `/dev/console`. The latter two devices allow
+seatd/libinput to deliver Sunshine's virtual mouse and keyboard events to the
+headless desktop.

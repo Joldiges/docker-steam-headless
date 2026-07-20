@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   steam-headless:
-    image: josh5/steam-headless:latest
+    image: ${STEAM_HEADLESS_IMAGE:-josh5/steam-headless:latest}
     restart: unless-stopped
     shm_size: ${SHM_SIZE}
     ipc: host # Could also be set to 'shareable'
@@ -56,6 +56,9 @@ services:
       - ENABLE_SUNSHINE=${ENABLE_SUNSHINE}
       - SUNSHINE_USER=${SUNSHINE_USER}
       - SUNSHINE_PASS=${SUNSHINE_PASS}
+      - SUNSHINE_CAPTURE=${SUNSHINE_CAPTURE}
+      - SUNSHINE_ENCODER=${SUNSHINE_ENCODER}
+      - SUNSHINE_CSRF_ALLOWED_ORIGINS=${SUNSHINE_CSRF_ALLOWED_ORIGINS}
       # Xorg
       - ENABLE_EVDEV_INPUTS=${ENABLE_EVDEV_INPUTS}
       - FORCE_X11_DUMMY_CONFIG=${FORCE_X11_DUMMY_CONFIG}
@@ -70,6 +73,9 @@ services:
       - /dev/fuse
       # Add the host uinput device [REQUIRED].
       - /dev/uinput
+      # Required by the labwc/seatd input path.
+      - /dev/tty0
+      - /dev/console
       # Add NVIDIA HW accelerated devices [OPTIONAL].
       # NOTE: If you use the nvidia container toolkit, this is not needed.
       #       Installing the nvidia container toolkit is the recommended method for running this container

@@ -571,6 +571,9 @@ ENV \
     WEBUI_USER="" \
     WEBUI_PASS="" \
     ENABLE_SUNSHINE="true" \
+    SUNSHINE_CAPTURE="auto" \
+    SUNSHINE_ENCODER="auto" \
+    SUNSHINE_CSRF_ALLOWED_ORIGINS="" \
     ENABLE_EVDEV_INPUTS="true" \
     ENABLE_WOL_POWER_MANAGER="false" \
     ENABLE_SID="false"

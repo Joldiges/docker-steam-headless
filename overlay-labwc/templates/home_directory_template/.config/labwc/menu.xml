@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu>
+  <menu id="root-menu" label="Applications">
+    <item label="Applications"><action name="Execute"><command>fuzzel</command></action></item>
+    <item label="Steam"><action name="Execute"><command>/usr/games/steam</command></action></item>
+    <item label="Bolt (OSRS)"><action name="Execute"><command>flatpak run com.adamcake.Bolt</command></action></item>
+    <item label="Terminal"><action name="Execute"><command>foot</command></action></item>
+    <menu id="display-resolution" label="Display resolution">
+      <item label="2560x1600"><action name="Execute"><command>display-control resolution 2560x1600</command></action></item>
+      <item label="1920x1200"><action name="Execute"><command>display-control resolution 1920x1200</command></action></item>
+      <item label="1600x1000"><action name="Execute"><command>display-control resolution 1600x1000</command></action></item>
+      <item label="1280x800"><action name="Execute"><command>display-control resolution 1280x800</command></action></item>
+      <item label="Custom..."><action name="Execute"><command>display-control custom-resolution</command></action></item>
+    </menu>
+    <menu id="display-framerate" label="Display framerate">
+      <item label="120 Hz"><action name="Execute"><command>display-control refresh 120</command></action></item>
+      <item label="90 Hz"><action name="Execute"><command>display-control refresh 90</command></action></item>
+      <item label="60 Hz"><action name="Execute"><command>display-control refresh 60</command></action></item>
+      <item label="Custom..."><action name="Execute"><command>display-control custom-refresh</command></action></item>
+    </menu>
+    <menu id="display-scale" label="Display scale">
+      <item label="100%"><action name="Execute"><command>display-control scale 1</command></action></item>
+      <item label="125% (default)"><action name="Execute"><command>display-control scale 1.25</command></action></item>
+      <item label="150%"><action name="Execute"><command>display-control scale 1.5</command></action></item>
+      <item label="Custom..."><action name="Execute"><command>display-control custom-scale</command></action></item>
+    </menu>
+    <separator />
+    <item label="Reconfigure"><action name="Reconfigure" /></item>
+    <item label="Exit labwc"><action name="Exit" /></item>
+  </menu>
+</openbox_menu>

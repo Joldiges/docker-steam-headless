@@ -75,6 +75,8 @@ spec:
           value: 'sam'
         - name: SUNSHINE_PASS
           value: 'password'
+        - name: SUNSHINE_CSRF_ALLOWED_ORIGINS
+          value: '192.168.0.49,192.168.0.140'
         - name: ENABLE_EVDEV_INPUTS
           value: 'true'
         - name: NVIDIA_DRIVER_CAPABILITIES

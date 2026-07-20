@@ -64,6 +64,24 @@ if ([ "X${SUNSHINE_CLIENT_WIDTH:-}" != "X" ] && [ "X${SUNSHINE_CLIENT_HEIGHT:-}"
         set +e
         echo "  - Setting display resolution to ${SUNSHINE_CLIENT_WIDTH:?}x${SUNSHINE_CLIENT_HEIGHT:?} ${SUNSHINE_CLIENT_FPS:?}Hz"
 
+        if [ -n "${WAYLAND_DISPLAY:-}" ] && command -v wlr-randr >/dev/null 2>&1; then
+            __wayland_output="${SUNSHINE_WAYLAND_OUTPUT:-HEADLESS-1}"
+            __wlr_out="$(wlr-randr 2>/dev/null)"
+            if echo "${__wlr_out}" | grep -q "^${__wayland_output} "; then
+                __current_mode="$(echo "${__wlr_out}" | sed -n "/^${__wayland_output} /,/^[^ ]/p" | awk '/(current)/ {print $1; exit}')"
+                __current_rate="$(echo "${__wlr_out}" | sed -n "/^${__wayland_output} /,/^[^ ]/p" | awk '/(current)/ {print $3; exit}')"
+                __current_scale="$(echo "${__wlr_out}" | sed -n "/^${__wayland_output} /,/^[^ ]/p" | awk '/Scale:/ {print $2; exit}')"
+                echo "  - Using Wayland output ${__wayland_output}"
+                if wlr-randr --output "${__wayland_output}" --custom-mode "${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}@${SUNSHINE_CLIENT_FPS}Hz"; then
+                    echo "wayland_output='${__wayland_output}'" >> /tmp/sunshine-exec-run.conf
+                    echo "wayland_mode='${__current_mode}'" >> /tmp/sunshine-exec-run.conf
+                    echo "wayland_rate='${__current_rate}'" >> /tmp/sunshine-exec-run.conf
+                    echo "wayland_scale='${__current_scale}'" >> /tmp/sunshine-exec-run.conf
+                fi
+                exit 0
+            fi
+        fi
+
         # Read current display mode and extract resolution and refresh rate from the mode string
         __xrandr_out="$(xrandr -q)"
         __current_current_mode=$(echo "${__xrandr_out:?}" | awk '/\*/ {print $0}')

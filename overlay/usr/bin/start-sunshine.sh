@@ -45,6 +45,54 @@ fi
 if [ ! -f "${USER_HOME:?}/.config/sunshine/sunshine_state.json" ]; then
     echo "{}" > "${USER_HOME:?}/.config/sunshine/sunshine_state.json"
 fi
+
+# Apply optional container-level capture/encoder overrides.  This is useful
+# for NVIDIA containers, where automatic probing may select KMS before the
+# Xorg/NvFBC path is ready.  Existing user configuration remains authoritative
+# unless the corresponding environment variable is explicitly set.
+set_sunshine_option() {
+    local option="${1:?}"
+    local value="${2:?}"
+    local config="${USER_HOME:?}/.config/sunshine/sunshine.conf"
+    if grep -qE "^[[:space:]]*${option}[[:space:]]*=" "${config}"; then
+        sed -i -E "s|^[[:space:]]*${option}[[:space:]]*=.*$|${option} = ${value}|" "${config}"
+    else
+        printf '\n%s = %s\n' "${option}" "${value}" >> "${config}"
+    fi
+}
+
+case "${SUNSHINE_CAPTURE:-auto}" in
+    auto|'') ;;
+    nvfbc|kms|wlr|kwin|x11) set_sunshine_option capture "${SUNSHINE_CAPTURE}" ;;
+    *) echo "WARNING: ignoring unsupported SUNSHINE_CAPTURE='${SUNSHINE_CAPTURE}'" ;;
+esac
+case "${SUNSHINE_ENCODER:-auto}" in
+    auto|'') ;;
+    nvenc|quicksync|amdvce|vaapi|vulkan|software) set_sunshine_option encoder "${SUNSHINE_ENCODER}" ;;
+    *) echo "WARNING: ignoring unsupported SUNSHINE_ENCODER='${SUNSHINE_ENCODER}'" ;;
+esac
+
+# Sunshine 2026.516+ protects state-changing Web UI requests with CSRF checks.
+# Accept either complete origins or bare host/IP values. Bare values become
+# HTTPS origins, which matches Sunshine's Web UI.
+if [ -n "${SUNSHINE_CSRF_ALLOWED_ORIGINS:-}" ]; then
+    __csrf_origins=""
+    __csrf_separator=""
+    IFS=',' read -ra __csrf_values <<< "${SUNSHINE_CSRF_ALLOWED_ORIGINS}"
+    for __csrf_origin in "${__csrf_values[@]}"; do
+        __csrf_origin="${__csrf_origin#${__csrf_origin%%[![:space:]]*}}"
+        __csrf_origin="${__csrf_origin%${__csrf_origin##*[![:space:]]}}"
+        [ -n "${__csrf_origin}" ] || continue
+        case "${__csrf_origin}" in
+            http://*|https://*) ;;
+            *) __csrf_origin="https://${__csrf_origin}" ;;
+        esac
+        __csrf_origins="${__csrf_origins}${__csrf_separator}${__csrf_origin}"
+        __csrf_separator=','
+    done
+    [ -n "${__csrf_origins}" ] && set_sunshine_option csrf_allowed_origins "${__csrf_origins}"
+fi
+
 # Reset the default username/password
 if ([ "X${SUNSHINE_USER:-}" != "X" ] && [ "X${SUNSHINE_PASS:-}" != "X" ]); then
     /usr/bin/sunshine "${USER_HOME:?}/.config/sunshine/sunshine.conf" --creds "${SUNSHINE_USER:?}" "${SUNSHINE_PASS:?}"

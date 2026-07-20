@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<labwc_config>
+  <core>
+    <decoration>yes</decoration>
+    <xwaylandPersistence>yes</xwaylandPersistence>
+  </core>
+  <desktops><number>1</number></desktops>
+  <keyboard>
+    <keybind key="W-Return"><action name="Execute"><command>foot</command></action></keybind>
+    <keybind key="W-q"><action name="Close" /></keybind>
+  </keyboard>
+  <mouse>
+    <context name="Root">
+      <mousebind button="Right" action="Press">
+        <action name="ShowMenu"><menu>root-menu</menu></action>
+      </mousebind>
+    </context>
+  </mouse>
+</labwc_config>

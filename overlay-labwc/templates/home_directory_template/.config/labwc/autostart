@@ -1,0 +1,9 @@
+#!/bin/sh
+
+mkdir -p "$HOME/.config/waybar"
+waybar >/home/default/.cache/log/waybar-labwc.log 2>&1 &
+
+# The headless output starts at a compositor default mode. Apply the desired
+# mode after labwc has created HEADLESS-1; Sunshine will capture physical pixels
+# at this size even when the compositor scale is changed separately.
+(sleep 2; wlr-randr --output HEADLESS-1 --custom-mode "${DISPLAY_SIZEW}x${DISPLAY_SIZEH}@${DISPLAY_REFRESH}Hz"; wlr-randr --output HEADLESS-1 --scale "${DISPLAY_SCALE:-1.25}") &

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+output="${DISPLAY_OUTPUT:-HEADLESS-1}"
+runtime="${XDG_RUNTIME_DIR:?}"
+export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
+
+current_mode() {
+    wlr-randr | awk '/Modes:/{seen=1; next} seen && /current/{print; exit}'
+}
+
+current_resolution() {
+    current_mode | grep -oE '[0-9]+x[0-9]+' | head -1
+}
+
+current_refresh() {
+    current_mode | grep -oE '[0-9]+(\.[0-9]+)? Hz' | head -1 | sed 's/ Hz$//' | sed 's/\.0$//'
+}
+
+current_scale() {
+    wlr-randr | awk '/Scale:/{print $2; exit}'
+}
+
+apply_mode() {
+    local mode="$1" scale="${2:-$(current_scale)}"
+    wlr-randr --output "$output" --custom-mode "$mode"
+    # wlroots may reset scale when replacing a headless custom mode.
+    wlr-randr --output "$output" --scale "$scale"
+}
+
+choose() {
+    printf '%s\n' "$@" | fuzzel --dmenu --prompt="$1: "
+}
+
+case "${1:-}" in
+    resolution)
+        mode="${2:?resolution required}"
+        apply_mode "${mode}@$(current_refresh)"
+        ;;
+    refresh)
+        refresh="${2:?refresh required}"
+        apply_mode "$(current_resolution)@${refresh}Hz"
+        ;;
+    scale)
+        wlr-randr --output "$output" --scale "$2"
+        ;;
+    custom-resolution)
+        mode="$(choose 2560x1600 1920x1200 1600x1000 1280x800)" || exit 0
+        [ -n "$mode" ] && exec "$0" resolution "$mode"
+        ;;
+    custom-refresh)
+        refresh="$(choose 120 90 60)" || exit 0
+        [ -n "$refresh" ] && exec "$0" refresh "$refresh"
+        ;;
+    custom-scale)
+        scale="$(choose 1 1.25 1.5)" || exit 0
+        [ -n "$scale" ] && exec "$0" scale "$scale"
+        ;;
+    *)
+        echo "usage: display-control {resolution|refresh|scale|custom-resolution|custom-refresh|custom-scale} ..." >&2
+        exit 2
+        ;;
+esac

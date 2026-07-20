@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   steam-headless:
-    image: josh5/steam-headless:latest
+    image: ${STEAM_HEADLESS_IMAGE:-josh5/steam-headless:latest}
     restart: unless-stopped
     ## NOTE: This config uses privileged to access to host to be able to access the required devices
     privileged: true
@@ -48,6 +48,7 @@ services:
       - ENABLE_SUNSHINE=${ENABLE_SUNSHINE}
       - SUNSHINE_USER=${SUNSHINE_USER}
       - SUNSHINE_PASS=${SUNSHINE_PASS}
+      - SUNSHINE_CSRF_ALLOWED_ORIGINS=${SUNSHINE_CSRF_ALLOWED_ORIGINS}
       # Xorg
       - ENABLE_EVDEV_INPUTS=${ENABLE_EVDEV_INPUTS}
       - FORCE_X11_DUMMY_CONFIG=${FORCE_X11_DUMMY_CONFIG}

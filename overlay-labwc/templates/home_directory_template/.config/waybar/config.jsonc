@@ -1,0 +1,26 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "modules-left": ["custom/launcher", "custom/display"],
+  "modules-center": ["clock"],
+  "modules-right": ["cpu", "memory"],
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 18,
+    "tooltip-format": "{title}",
+    "on-click": "activate",
+    "on-click-right": "close"
+  },
+  "custom/launcher": {
+    "format": "  Applications  ",
+    "on-click": "fuzzel"
+  },
+  "custom/display": {
+    "format": "  Display  ",
+    "on-click": "display-menu"
+  },
+  "clock": { "format": "{:%a %Y-%m-%d %H:%M}" },
+  "cpu": { "format": "CPU {usage}%" },
+  "memory": { "format": "RAM {percentage}%" },
+}
