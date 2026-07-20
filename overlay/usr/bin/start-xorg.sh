@@ -51,7 +51,8 @@ xorg_pid=$!
 # parsing, but accepts them through RandR once the server is running.  Add and
 # select the configured mode here so headless clients get the requested size
 # and refresh rate (including modes such as 2560x1600@120).
-if [ "${FORCE_X11_DUMMY_CONFIG:-false}" = "true" ] \
+if [ -f /etc/X11/xorg.conf ] \
+    && grep -qE '^[[:space:]]*Driver[[:space:]]+"dummy"' /etc/X11/xorg.conf \
     && command -v cvt >/dev/null 2>&1 \
     && [ -n "${DISPLAY_SIZEW:-}" ] \
     && [ -n "${DISPLAY_SIZEH:-}" ] \
