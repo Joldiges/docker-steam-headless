@@ -22,7 +22,7 @@
   <Config Name="Display width" Target="DISPLAY_SIZEW" Default="2560" Mode="" Description="Virtual display width." Type="Variable" Display="advanced" Required="true" Mask="false"/>
   <Config Name="Display height" Target="DISPLAY_SIZEH" Default="1600" Mode="" Description="Virtual display height." Type="Variable" Display="advanced" Required="true" Mask="false"/>
   <Config Name="Display refresh" Target="DISPLAY_REFRESH" Default="120" Mode="" Description="Default virtual display refresh rate." Type="Variable" Display="advanced" Required="true" Mask="false"/>
-  <Config Name="Display scale" Target="DISPLAY_SCALE" Default="1.25" Mode="" Description="Default labwc scale factor." Type="Variable" Display="advanced" Required="true" Mask="false"/>
+  <Config Name="Display scale" Target="DISPLAY_SCALE" Default="1.0" Mode="" Description="Default labwc scale factor. Keep at 1.0 for reliable Sunshine capture." Type="Variable" Display="advanced" Required="true" Mask="false"/>
   <Config Name="Web UI mode" Target="WEB_UI_MODE" Default="vnc" Mode="" Description="Use vnc for raw Wayland VNC debugging on VNC_PORT, or none for Moonlight only." Type="Variable" Display="advanced" Required="true" Mask="false">vnc</Config>
   <Config Name="VNC port" Target="VNC_PORT" Default="5901" Mode="" Description="Raw VNC port, used when Web UI mode is vnc. 5900 is avoided because Unraid commonly uses it for another VNC service. Do not expose it to the Internet." Type="Variable" Display="advanced" Required="true" Mask="false"/>
   <Config Name="VNC password" Target="VNC_PASSWORD" Default="" Mode="" Description="VNC password. If empty, the desktop USER_PASSWORD is used." Type="Variable" Display="advanced" Required="false" Mask="true"/>
