@@ -1,0 +1,7 @@
+ARG BASE_IMAGE=docker.io/jamesoldiges/steam-headless:xorg-display-fix
+FROM ${BASE_IMAGE}
+
+# Bolt is deliberately kept in a separate image layer. Installing it
+# system-wide means it remains available when /home/default is mounted as
+# persistent appdata by Docker/Unraid.
+RUN flatpak --system install --assumeyes flathub com.adamcake.Bolt

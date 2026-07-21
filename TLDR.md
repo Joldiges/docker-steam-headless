@@ -12,7 +12,7 @@ This branch is the upstream [Steam Headless](https://github.com/Steam-Headless/d
 
 ## What did not change
 
-The desktop, Steam startup, application installation, Sunshine configuration UI, and upstream environment-variable defaults remain unchanged. Bolt, display-management menus, and other convenience features are not part of this minimal fork.
+The desktop, Steam startup, application installation, Sunshine configuration UI, and upstream environment-variable defaults remain unchanged in the base display-fix image. Bolt is provided as a separate optional image layer so it does not mix with the Xorg fix.
 
 The branch was based on upstream `master` at commit `096fc4b` and currently contains only the headless Xorg/display/input changes above.
 
@@ -30,6 +30,20 @@ The published image is:
 ```text
 docker.io/jamesoldiges/steam-headless:xorg-display-fix
 ```
+
+### Optional Bolt image
+
+`Dockerfile.bolt` adds the system-wide Flathub package `com.adamcake.Bolt`, the unofficial Jagex launcher used to install and run RuneLite. It is a separate layer so the display-fix image stays close to upstream:
+
+```sh
+podman build \
+  --build-arg BASE_IMAGE=docker.io/jamesoldiges/steam-headless:xorg-display-fix \
+  -f Dockerfile.bolt \
+  -t jamesoldiges/steam-headless:xorg-display-fix-bolt .
+podman push jamesoldiges/steam-headless:xorg-display-fix-bolt
+```
+
+The Bolt layer adds roughly 1.2 GB installed because it includes the Flatpak runtime. It is installed at build time, so it does not delay container startup.
 
 ## Unraid notes
 
