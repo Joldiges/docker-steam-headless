@@ -28,7 +28,6 @@ fi
     -ac \
     -noreset \
     -novtswitch \
-    -sharevts \
     +extension RANDR \
     +extension RENDER \
     +extension GLX \
@@ -44,7 +43,7 @@ fi
     -nolisten tcp \
     -iglx \
     -verbose \
-    vt7 "${DISPLAY:?}" &
+    "${DISPLAY:?}" &
 xorg_pid=$!
 
 # The dummy driver rejects reduced-blanking modes during initial Xorg config
@@ -59,6 +58,34 @@ if [ -f /etc/X11/xorg.conf ] \
     && [ -n "${DISPLAY_REFRESH:-}" ]; then
     wait_for_x
     dummy_output=$(xrandr -q | awk '/ connected/ { print $1; exit }')
+
+    # Populate the dummy output with useful display profiles so XFCE's
+    # display settings and the streaming client can select both the common
+    # resolutions and the requested refresh rates. These are added through
+    # RandR after Xorg starts because the dummy driver's static config cannot
+    # express every resolution/refresh-rate combination cleanly.
+    profile_resolutions=(
+        3840x2160 3440x1440 2560x1600 2560x1440 2560x1080
+        1920x1200 1920x1080 1680x1050 1600x900 1280x800
+        1280x720 1024x768 1024x576
+    )
+    profile_refresh_rates=(15 30 60 90 120 140 144 165)
+    if [ -n "${dummy_output}" ]; then
+        for profile_resolution in "${profile_resolutions[@]}"; do
+            profile_width="${profile_resolution%x*}"
+            profile_height="${profile_resolution#*x}"
+            for profile_refresh in "${profile_refresh_rates[@]}"; do
+                profile_modeline=$(cvt "${profile_width}" "${profile_height}" "${profile_refresh}" 2>/dev/null | sed -n 2p || true)
+                profile_modeline="${profile_modeline#Modeline }"
+                profile_mode_name=$(printf '%s\n' "${profile_modeline}" | awk -F '"' 'NF >= 2 { print $2 }')
+                if [ -n "${profile_modeline}" ] && [ -n "${profile_mode_name}" ]; then
+                    xrandr --newmode "${profile_mode_name}" ${profile_modeline##*\"} 2>/dev/null || true
+                    xrandr --addmode "${dummy_output}" "${profile_mode_name}" 2>/dev/null || true
+                fi
+            done
+        done
+    fi
+
     modeline=$(cvt -r "${DISPLAY_SIZEW}" "${DISPLAY_SIZEH}" "${DISPLAY_REFRESH}" 2>/dev/null | sed -n 2p || true)
     modeline="${modeline#Modeline }"
     mode_name=$(printf '%s\n' "${modeline}" | awk -F '"' 'NF >= 2 { print $2 }')

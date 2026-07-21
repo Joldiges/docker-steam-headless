@@ -75,11 +75,10 @@ while true; do
             # Sunshine creates its virtual input devices on client connect. In
             # restricted containers with a private /dev, the sysfs devices may
             # exist before /dev/input/event* nodes are visible to Xorg. Build
-            # the missing nodes, then restart Xorg once so it enumerates them
-            # cleanly.
+            # the missing nodes; Xorg hot-plugs the mapped devices without
+            # needing a disruptive restart of the headless display.
             sleep 2
             sync_input_nodes
-            supervisorctl restart xorg >/dev/null 2>&1 || true
             : > "${state_dir}/xorg-restarted"
         fi
     else
